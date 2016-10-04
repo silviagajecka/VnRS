@@ -74,16 +74,31 @@ int main(void)
      GPIOA->PUPDR |= 0b01<<5*2;
      GPIOA->OSPEEDR |= 0b11<<5*2;
 
-     GPIOA->ODR |= 0b1<<5;//zasvietenie
-     GPIOA->ODR &= ~(0b1<<5);//zhasnutie
-     GPIOA->ODR ^= (0b1<<5);//zmena stavu
 
+
+     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
+     GPIOC->MODER &= ~(0b11<<13*2);
+     GPIOC->OTYPER &= ~(0b1<<13);
+     GPIOC->PUPDR &= ~(0b11<<13*2);
+
+     int button;
   /* Infinite loop */
   while (1)
   {
 
-	       GPIOA->BSRRH |= 0b1<<5;//zhasnutie
-	       GPIOA->BSRRL |= 0b1<<5;//zasveitenie
+	  if(!(GPIOC->IDR & (1<<13)))
+	    		  {
+	    	  button = 1;
+	    		  }
+	      else
+	    	  button = 0;
+
+	     if(button == 1)
+	    	 GPIOA->ODR |= 0b1<<5;//zasvietenie
+	     else
+	    	 GPIOA->ODR &= ~(0b1<<5);//zhasnutie
+
+
 	i++;
   }
   return 0;
